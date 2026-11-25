@@ -84,6 +84,24 @@ td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabula
 .price small{font:400 14px var(--f-body);color:var(--muted)}
 .plan ul{margin:0;padding-left:18px;display:grid;gap:4px}
 .note{font-size:13px;color:var(--muted)}
+.tag{font:600 10px var(--f-body);letter-spacing:.06em;text-transform:uppercase;background:var(--accent);color:var(--accent-ink);border-radius:3px;padding:1px 5px;vertical-align:middle}
+.is-pro .tag{display:none}
+#pLogo{display:block;max-height:56px;max-width:160px;margin:0 0 6px auto}
+.hist{padding-block:8px 24px;display:grid;gap:12px}
+.hist h2{font-size:24px;font-weight:800}
+.hlist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.hlist li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+.hlist li span{min-width:0;overflow-wrap:anywhere}
+.hlist button{font:500 13px var(--f-body);background:transparent;border:1px solid var(--line);border-radius:6px;padding:6px 10px;color:var(--ink);cursor:pointer}
+.btn[aria-disabled="true"]{opacity:.5;cursor:not-allowed}
+@media print{
+  body{padding:0;background:#fff}
+  body *{visibility:hidden}
+  .sheet,.sheet *{visibility:visible;color:#000!important;border-color:#bbb!important}
+  .sheet{position:absolute;inset:0 auto auto 0;width:100%;border:0!important;box-shadow:none;background:#fff!important;padding:0}
+  .sheet .actions,.sheet .toast{display:none}
+  .sh-top{border-bottom-color:#000!important}
+}
 footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -109,6 +127,7 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
         <label>NIF<input id="bizNif" value="123456789" inputmode="numeric"></label>
       </div>
       <label>Contacto<input id="bizPhone" value="912 345 678"></label>
+      <label>Logótipo <span class="tag">Pro</span><input id="logo" type="file" accept="image/png,image/jpeg,image/webp"></label>
     </fieldset>
     <fieldset>
       <legend>Cliente</legend>
@@ -121,6 +140,7 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
       <legend>Trabalhos e materiais</legend>
       <div class="item ih" aria-hidden="true"><span>Descrição</span><span>Qtd</span><span>Un.</span><span>Preço €</span><span></span></div>
       <div class="items" id="items"></div>
+      <datalist id="plist"></datalist>
       <div><button type="button" class="btn ghost" id="add">+ Adicionar linha</button></div>
     </fieldset>
     <fieldset>
@@ -145,7 +165,7 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
   <aside class="sheet" aria-label="Pré-visualização do orçamento">
     <div class="sh-top">
       <div><h2>ORÇAMENTO</h2><div class="small mono" id="qNum"></div></div>
-      <div style="text-align:right"><strong id="pBiz"></strong><div class="small" id="pBizMeta"></div></div>
+      <div style="text-align:right"><img id="pLogo" alt="" hidden><strong id="pBiz"></strong><div class="small" id="pBizMeta"></div></div>
     </div>
     <div class="meta">
       <div><b>Cliente</b><span id="pCli"></span><div class="small" id="pAddr"></div></div>
@@ -162,15 +182,22 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
     </div>
     <div class="small" id="pNotes"></div>
     <div class="foot">
-      <span class="wm">Feito com Orçamento Rápido · grátis</span>
+      <span class="wm" id="wm">Feito com Orçamento Rápido · grátis</span>
       <span class="wm">Este documento não é uma fatura.</span>
     </div>
     <div class="actions">
       <button class="btn" type="button" id="copy">Copiar para WhatsApp</button>
-      <a class="btn ghost" href="#precos">Exportar PDF (Pro)</a>
+      <button class="btn ghost" type="button" id="pdf">Exportar PDF <span class="tag">Pro</span></button>
+      <button class="btn ghost" type="button" id="save">Guardar no histórico <span class="tag">Pro</span></button>
     </div>
     <div class="toast" id="toast" role="status"></div>
   </aside>
+</section>
+
+<section class="hist" id="historico" hidden>
+  <h2>Histórico de orçamentos</h2>
+  <p class="note" id="histEmpty">Ainda não guardou orçamentos. Use "Guardar no histórico" depois de preencher um.</p>
+  <ul class="hlist" id="hlist"></ul>
 </section>
 
 <section class="pricing" id="precos">
@@ -185,8 +212,8 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
       <h3>Pro</h3>
       <div class="price">6,90 € <small>/ mês</small></div>
       <ul><li>PDF com o seu logótipo</li><li>Sem rodapé da marca</li><li>Histórico de clientes e orçamentos</li><li>Tabela de preços guardada</li></ul>
-      <div><a class="btn" id="buy" href="#precos">Começar Pro</a></div>
-      <p class="note" id="buyNote">Pagamento seguro com cartão, MB WAY ou Multibanco. Cancele quando quiser.</p>
+      <div><a class="btn" id="buy" href="#precos" rel="noopener">Começar Pro</a></div>
+      <p class="note" id="buyNote">O plano Pro abre em breve.</p>
     </div>
   </div>
 </section>
@@ -194,76 +221,6 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
 <footer>Guias: <a href="guias/como-fazer-orcamento-obras">Como fazer um orçamento de obras</a> · <a href="guias/iva-6-obras">IVA a 6% em obras</a><br>Orçamento Rápido · Um orçamento não substitui a fatura emitida em software certificado pela AT.</footer>
 </div>
 
-<script>
-const $=id=>document.getElementById(id);
-const eur=n=>n.toLocaleString('pt-PT',{style:'currency',currency:'EUR'});
-let items=[
-  {d:'Substituição de esquentador (mão de obra)',q:1,u:'serv.',p:120},
-  {d:'Esquentador estanque 11 L',q:1,u:'un.',p:289},
-  {d:'Tubo multicamada 16 mm',q:6,u:'m',p:3.4},
-  {d:'Deslocação',q:1,u:'serv.',p:25}
-];
-const qn='ORC-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*900)+100);
-function renderItems(){
-  const box=$('items');box.innerHTML='';
-  items.forEach((it,i)=>{
-    const r=document.createElement('div');r.className='item';
-    r.innerHTML=`<input class="d" id="d${i}" aria-label="Descrição" value="${it.d.replace(/"/g,'&quot;')}">
-      <input id="q${i}" aria-label="Quantidade" type="number" step="any" min="0" value="${it.q}">
-      <input id="u${i}" aria-label="Unidade" value="${it.u}">
-      <input id="p${i}" aria-label="Preço unitário" type="number" step="0.01" min="0" value="${it.p}">
-      <button type="button" class="x" aria-label="Remover linha">×</button>`;
-    r.querySelector('.d').oninput=e=>{it.d=e.target.value;render()};
-    r.querySelector(`#q${i}`).oninput=e=>{it.q=parseFloat(e.target.value)||0;render()};
-    r.querySelector(`#u${i}`).oninput=e=>{it.u=e.target.value;render()};
-    r.querySelector(`#p${i}`).oninput=e=>{it.p=parseFloat(e.target.value)||0;render()};
-    r.querySelector('.x').onclick=()=>{items.splice(i,1);renderItems();render()};
-    box.appendChild(r);
-  });
-}
-function calc(){
-  const sub=items.reduce((s,i)=>s+i.q*i.p,0);const rate=+$('vat').value;
-  const vat=Math.round(sub*rate)/100;return{sub,rate,vat,tot:sub+vat};
-}
-function fmtDate(d){return d.toLocaleDateString('pt-PT')}
-function render(){
-  $('vatWarn').hidden=$('vat').value!=='6';
-  const c=calc();const now=new Date();const until=new Date(now.getTime()+(+$('valid').value||30)*864e5);
-  $('qNum').textContent=qn;
-  $('pBiz').textContent=$('bizName').value;
-  $('pBizMeta').textContent='NIF '+$('bizNif').value+' · '+$('bizPhone').value;
-  $('pCli').textContent=$('cliName').value;$('pAddr').textContent=$('cliAddr').value;
-  $('pDates').textContent=fmtDate(now)+' · '+fmtDate(until);
-  const tb=$('pRows');tb.innerHTML='';
-  items.forEach(i=>{const tr=document.createElement('tr');
-    const td=(t,n)=>{const e=document.createElement('td');if(n)e.className='n';e.textContent=t;tr.appendChild(e)};
-    td(i.d);td(i.q+' '+i.u,1);td(eur(i.p),1);td(eur(i.q*i.p),1);tb.appendChild(tr)});
-  $('tSub').textContent=eur(c.sub);
-  $('tVatL').textContent=c.rate?`IVA ${c.rate}%`:'IVA (isento art. 53.º)';
-  $('tVat').textContent=eur(c.vat);$('tTot').textContent=eur(c.tot);
-  $('pNotes').textContent=$('notes').value;
-}
-function asText(){
-  const c=calc();const v=+$('valid').value||30;
-  const lines=items.map(i=>`• ${i.d}: ${i.q} ${i.u} × ${eur(i.p)} = ${eur(i.q*i.p)}`);
-  return [`*ORÇAMENTO ${qn}*`,`${$('bizName').value} · NIF ${$('bizNif').value}`,``,
-    `Cliente: ${$('cliName').value}`,`Obra: ${$('cliAddr').value}`,``,...lines,``,
-    `Subtotal: ${eur(c.sub)}`,c.rate?`IVA ${c.rate}%: ${eur(c.vat)}`:`IVA: isento (art. 53.º CIVA)`,
-    `*Total: ${eur(c.tot)}*`,``,`Válido ${v} dias. ${$('notes').value}`,`Contacto: ${$('bizPhone').value}`,``,
-    `_Feito com Orçamento Rápido_`].join('\n');
-}
-$('copy').onclick=()=>{
-  const t=asText();
-  const done=()=>{$('toast').textContent='Copiado. Cole na conversa do WhatsApp com o cliente.'};
-  try{navigator.clipboard.writeText(t).then(done,fallback)}catch(e){fallback()}
-  function fallback(){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();
-    try{document.execCommand('copy');done()}catch(e){$('toast').textContent='Selecione e copie o texto manualmente.'}ta.remove()}
-};
-$('add').onclick=()=>{items.push({d:'',q:1,u:'un.',p:0});renderItems();render();$('d'+(items.length-1)).focus()};
-$('f').addEventListener('input',render);
-$('f').addEventListener('submit',e=>e.preventDefault());
-$('buy').onclick=e=>{e.preventDefault();$('buyNote').textContent='Pagamentos ainda não ativos: o plano Pro abre em breve.'};
-renderItems();render();
-</script>
+<script src="app.js"></script>
 </body>
 </html>
