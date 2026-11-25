@@ -123,28 +123,34 @@ function applyPro() {
     $('buy').setAttribute('aria-disabled', 'true'); $('buy').removeAttribute('href');
     $('buyNote').textContent = 'Obrigado por apoiar o Orçamento Rápido.';
   }
-  $('restoreForm').hidden = on; $('myCode').hidden = !on;
-  if (on) $('myCodeVal').value = pro.sub;
+  $('restoreForm').hidden = on; $('buyBox').hidden = true;
   renderHist(); renderPrices();
 }
 
-$('codeBtn').onclick = async () => {
-  const code = $('code').value.trim();
-  const msg = t => { $('restoreMsg').textContent = t; };
-  if (!/^sub_[A-Za-z0-9]+$/.test(code)) return msg('O código começa por "sub_". Encontra-o no aparelho onde ativou o Pro, nesta mesma secção.');
-  msg('A confirmar…');
+async function activateByEmail(email, quiet) {
+  const msg = t => { if (!quiet) $('restoreMsg').textContent = t; };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg('Escreva o email que usou no pagamento.'); return false; }
+  msg('A confirmar o pagamento…');
   try {
-    const r = await fetch('/api/estado?sub=' + encodeURIComponent(code), { cache: 'no-store' });
+    const r = await fetch('/api/ativar-email?email=' + encodeURIComponent(email), { cache: 'no-store' });
     const j = await r.json();
-    if (!j.active) return msg('Este código não corresponde a uma subscrição ativa.');
-    pro = { sub: code, checked: Date.now() }; store.set('pro', pro); applyPro(); msg('Plano Pro ativo neste aparelho.');
-  } catch (e) { msg('Sem ligação. Tente novamente.'); }
-};
-$('myCodeCopy').onclick = () => {
-  const v = $('myCodeVal').value;
-  const ok = () => { $('restoreMsg').textContent = 'Código copiado.'; };
-  try { navigator.clipboard.writeText(v).then(ok, () => $('myCodeVal').select()); } catch (e) { $('myCodeVal').select(); }
-};
+    if (!j.ok) { msg(j.erro || 'Não foi possível ativar.'); return false; }
+    pro = { sub: j.sub, checked: Date.now() }; store.set('pro', pro); store.set('pendente', null);
+    applyPro(); $('restoreMsg').textContent = 'Plano Pro ativo neste aparelho. Obrigado!';
+    toast('Plano Pro ativo. Já pode exportar PDF com o seu logótipo.');
+    return true;
+  } catch (e) { msg('Sem ligação. Tente novamente.'); return false; }
+}
+$('restBtn').onclick = () => activateByEmail($('restEmail').value.trim(), false);
+
+// Depois de pagar no separador do Stripe, o Pro ativa-se sozinho quando o cliente volta a esta página.
+async function checkPending() {
+  const p = store.get('pendente', null);
+  if (isPro() || !p || Date.now() - p.at > 3 * 864e5) return;
+  const ok = await activateByEmail(p.email, true);
+  if (ok) $('precos').scrollIntoView({ behavior: 'smooth' });
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkPending(); });
 
 function renderPrices() {
   const dl = $('plist'); dl.innerHTML = '';
@@ -230,7 +236,18 @@ $('f').addEventListener('input', e => {
   render();
 });
 $('f').addEventListener('submit', e => e.preventDefault());
-$('buy').addEventListener('click', e => { if ($('buy').getAttribute('href') !== STRIPE_LINK) e.preventDefault(); });
+let paymentsOn = false;
+$('buy').addEventListener('click', e => {
+  if (!paymentsOn || isPro()) { e.preventDefault(); return; }
+  const email = $('buyEmail').value.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    e.preventDefault(); $('buyNote').textContent = 'Escreva o seu email antes de continuar.'; $('buyEmail').focus(); return;
+  }
+  store.set('pendente', { email, at: Date.now() });
+  $('buy').href = STRIPE_LINK + '?prefilled_email=' + encodeURIComponent(email);
+  $('buyNote').textContent = 'O pagamento abriu noutro separador. Quando terminar, volte a esta página: o Pro ativa-se sozinho.';
+  $('restEmail').value = email;
+});
 
 // O botão de compra só fica ativo quando o servidor confirma que os pagamentos estão configurados.
 async function checkPayments() {
@@ -239,7 +256,7 @@ async function checkPayments() {
     const r = await fetch('/api/estado?config=1', { cache: 'no-store' });
     const j = await r.json();
     if (j.configured) {
-      $('buy').href = STRIPE_LINK;
+      paymentsOn = true; $('buyBox').hidden = false; $('buy').href = STRIPE_LINK;
       $('buyNote').textContent = 'Pagamento seguro com cartão através do Stripe. Cancele quando quiser.';
     }
   } catch (e) { /* fica "abre em breve" */ }
@@ -257,4 +274,4 @@ async function recheckPro() {
   } catch (e) { /* sem rede: tenta noutro dia */ }
 }
 
-renderItems(); render(); applyPro(); checkPayments(); recheckPro();
+renderItems(); render(); applyPro(); checkPayments(); recheckPro(); checkPending();

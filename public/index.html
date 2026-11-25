@@ -102,6 +102,7 @@ td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabula
 .restore{border-top:1px solid var(--line);padding-top:16px;display:grid;gap:6px;max-width:560px}
 .restore label,.restore span{font-size:14px;color:var(--muted)}
 .rrow{display:flex;gap:8px}
+.buybox{display:grid;gap:4px}.buybox label{font-size:13px;color:var(--muted)}
 .rrow input{flex:1}
 .hist{padding-block:8px 24px;display:grid;gap:12px}
 .hist h2{font-size:24px;font-weight:800}
@@ -226,19 +227,19 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
       <div class="price">6,90 € <small>/ mês · menos de 0,23 € por dia</small></div>
       <ul><li>PDF com o seu logótipo, pronto a enviar por email</li><li>Sem o rodapé da marca: o orçamento é só seu</li><li>Histórico de orçamentos para reabrir e reenviar</li><li>Tabela de preços: os preços que já usou aparecem sozinhos</li></ul>
       <p class="note">Se um orçamento mais profissional lhe fizer ganhar uma obra por ano, o Pro paga-se várias vezes.</p>
-      <div><a class="btn" id="buy" href="#precos" rel="noopener">Começar Pro</a></div>
+      <div class="buybox" id="buyBox" hidden>
+        <label for="buyEmail">O seu email (para o recibo e para ativar o Pro)</label>
+        <input id="buyEmail" type="email" autocomplete="email" placeholder="nome@exemplo.pt">
+      </div>
+      <div><a class="btn" id="buy" href="#precos" rel="noopener" target="_blank">Começar Pro</a></div>
       <p class="note" id="buyNote">O plano Pro abre em breve.</p>
       <p class="note">Renova todos os meses. Para cancelar, responda ao email do recibo enviado pelo Stripe. <a href="termos">Termos e privacidade</a></p>
     </div>
   </div>
   <div class="restore" id="restore">
     <div id="restoreForm">
-      <label for="code">Já é Pro noutro aparelho? Introduza o seu código de ativação</label>
-      <div class="rrow"><input id="code" placeholder="sub_..." autocomplete="off" spellcheck="false"><button class="btn ghost" type="button" id="codeBtn">Ativar</button></div>
-    </div>
-    <div id="myCode" hidden>
-      <span>O seu código de ativação, para usar o Pro noutro aparelho:</span>
-      <div class="rrow"><input id="myCodeVal" readonly><button class="btn ghost" type="button" id="myCodeCopy">Copiar</button></div>
+      <label for="restEmail">Já pagou o Pro? Ative neste aparelho com o email usado no pagamento</label>
+      <div class="rrow"><input id="restEmail" type="email" autocomplete="email" placeholder="nome@exemplo.pt"><button class="btn ghost" type="button" id="restBtn">Ativar</button></div>
     </div>
     <p class="note" id="restoreMsg" role="status"></p>
   </div>

@@ -27,7 +27,7 @@
     if (!j.ok) return fail(j.erro || 'Erro desconhecido.');
     try { localStorage.setItem('or_pro', JSON.stringify({ sub: j.sub, checked: Date.now() })); } catch (e) { return fail('Este browser não deixa guardar dados.'); }
     t.textContent = 'Plano Pro ativo';
-    m.textContent = 'Já pode exportar PDF com o seu logótipo, guardar o histórico e usar a sua tabela de preços. Para usar o Pro noutro aparelho, guarde este código de ativação: ' + j.sub;
+    m.textContent = 'Já pode exportar PDF com o seu logótipo, guardar o histórico e usar a sua tabela de preços. Para usar o Pro noutro aparelho, abra o site nesse aparelho e ative com o seu email na secção Preços.';
     go.hidden = false;
   } catch (e) { fail('Sem ligação à internet.'); }
 })();
