@@ -51,6 +51,7 @@ def main(pesquisas):
                     continue
                 creditos[nome] = {"pesquisa": q, "titulo": r.get("title"), "licenca": "CC0 1.0",
                                   "fonte": r.get("source"), "pagina": r.get("foreign_landing_url"), "url": r["url"]}
+                json.dump(creditos, open(CREDITOS, "w"), ensure_ascii=False, indent=1)
                 novas += 1
             guardadas += 1
         print(f"{q}: {guardadas} fotos")
