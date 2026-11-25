@@ -6,6 +6,17 @@
 <meta name="description" content="Faça orçamentos de obras com IVA português em 2 minutos e envie pelo WhatsApp. Grátis para canalizadores, eletricistas e pintores.">
 <title>Orçamento Rápido</title>
 <link rel="canonical" href="https://orcamentorapido.pages.dev/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Orçamento Rápido">
+<meta property="og:title" content="Orçamento Rápido · orçamentos de obras no telemóvel">
+<meta property="og:description" content="Mão de obra, materiais e IVA português calculado, incluindo a regra dos 20% no IVA a 6%. Envie ao cliente pelo WhatsApp em 2 minutos. Grátis.">
+<meta property="og:url" content="https://orcamentorapido.pages.dev/">
+<meta property="og:image" content="https://orcamentorapido.pages.dev/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Orçamento Rápido","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"pt-PT","url":"https://orcamentorapido.pages.dev/","offers":[{"@type":"Offer","name":"Grátis","price":"0","priceCurrency":"EUR"},{"@type":"Offer","name":"Pro","price":"6.90","priceCurrency":"EUR"}]}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: hero → working tool (form | live quote sheet) → pricing. Workshop ink + hi-vis accent. */
@@ -47,11 +58,12 @@ legend{font:600 12px var(--f-body);text-transform:uppercase;letter-spacing:.08em
 label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
 input,select{font:400 15px var(--f-body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:9px 10px;width:100%;min-width:0}
 .items{display:grid;gap:8px}
-.item{display:grid;grid-template-columns:minmax(0,1fr) 64px 70px 90px 34px;gap:6px;align-items:center}
+.item{display:grid;grid-template-columns:minmax(0,1fr) 74px 58px 58px 84px 34px;gap:6px;align-items:center}
+.item input,.item select{padding:8px 6px}
 .item input{padding:8px}
 .item .x{background:transparent;border:1px solid var(--line);border-radius:6px;height:38px;cursor:pointer;color:var(--muted);font-size:16px}
 .ih{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-@media (max-width:480px){.item{grid-template-columns:1fr 1fr 1fr 34px}.item .d{grid-column:1/-1}.ih{display:none}}
+@media (max-width:520px){.item{grid-template-columns:84px 1fr 1fr 1fr 34px}.item .d{grid-column:1/-1}.ih{display:none}.item{padding-bottom:8px;border-bottom:1px dashed var(--line)}}
 /* quote sheet */
 .sheet{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:28px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;display:grid;gap:18px;box-shadow:0 1px 0 var(--line),0 12px 30px -18px rgba(0,0,0,.25)}
 @media (max-width:860px){.sheet{position:static}}
@@ -87,6 +99,10 @@ td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabula
 .tag{font:600 10px var(--f-body);letter-spacing:.06em;text-transform:uppercase;background:var(--accent);color:var(--accent-ink);border-radius:3px;padding:1px 5px;vertical-align:middle}
 .is-pro .tag{display:none}
 #pLogo{display:block;max-height:56px;max-width:160px;margin:0 0 6px auto}
+.restore{border-top:1px solid var(--line);padding-top:16px;display:grid;gap:6px;max-width:560px}
+.restore label,.restore span{font-size:14px;color:var(--muted)}
+.rrow{display:flex;gap:8px}
+.rrow input{flex:1}
 .hist{padding-block:8px 24px;display:grid;gap:12px}
 .hist h2{font-size:24px;font-weight:800}
 .hlist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
@@ -115,7 +131,7 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
 
 <section class="hero">
   <h1>Faça o orçamento <mark>ainda na obra</mark>, envie pelo WhatsApp antes de sair.</h1>
-  <p>Para canalizadores, eletricistas, pintores e pequenas obras. Linhas de material e mão de obra, IVA português calculado, pronto a enviar ao cliente em 2 minutos.</p>
+  <p>Para canalizadores, eletricistas, pintores e pequenas obras. Separe mão de obra e materiais e o IVA é calculado sozinho, incluindo a regra dos 20% de materiais no IVA a 6%. Pronto a enviar ao cliente em 2 minutos.</p>
 </section>
 
 <section class="tool" aria-label="Criar orçamento">
@@ -138,7 +154,7 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
     </fieldset>
     <fieldset>
       <legend>Trabalhos e materiais</legend>
-      <div class="item ih" aria-hidden="true"><span>Descrição</span><span>Qtd</span><span>Un.</span><span>Preço €</span><span></span></div>
+      <div class="item ih" aria-hidden="true"><span>Descrição</span><span>Tipo</span><span>Qtd</span><span>Un.</span><span>Preço €</span><span></span></div>
       <div class="items" id="items"></div>
       <datalist id="plist"></datalist>
       <div><button type="button" class="btn ghost" id="add">+ Adicionar linha</button></div>
@@ -156,7 +172,7 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
         </label>
         <label>Validade (dias)<input id="valid" type="number" min="1" value="30" inputmode="numeric"></label>
       </div>
-      <p class="small" id="vatWarn" hidden>Atenção: a taxa de 6% só se aplica se os materiais não passarem de 20% do valor total da obra. Acima disso, a parte dos materiais paga 23%. <a href="guias/iva-6-obras">Saber mais</a></p>
+      <p class="small" id="vatWarn" hidden>Com IVA a 6%, se os materiais passarem de 20% do total da obra, os materiais passam a 23% e a mão de obra fica a 6%. O cálculo é feito automaticamente a partir do tipo de cada linha. <a href="guias/iva-6-obras">Saber mais</a></p>
       <label>Notas<input id="notes" value="Inclui deslocação. Pagamento 50% na adjudicação."></label>
     </fieldset>
     <p class="small">Exemplo preenchido. Altere os campos para criar o seu.</p>
@@ -175,11 +191,7 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
       <thead><tr><th>Descrição</th><th class="n">Qtd</th><th class="n">Preço</th><th class="n">Total</th></tr></thead>
       <tbody id="pRows"></tbody>
     </table></div>
-    <div class="tot">
-      <span>Subtotal</span><span id="tSub"></span>
-      <span id="tVatL">IVA</span><span id="tVat"></span>
-      <span class="g">Total</span><span class="g" id="tTot"></span>
-    </div>
+    <div class="tot" id="tot"></div>
     <div class="small" id="pNotes"></div>
     <div class="foot">
       <span class="wm" id="wm">Feito com Orçamento Rápido · grátis</span>
@@ -202,23 +214,37 @@ footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;colo
 
 <section class="pricing" id="precos">
   <h2>Preços</h2>
+  <p class="note">Sem registo e sem instalar nada. Os seus orçamentos ficam guardados só no seu aparelho.</p>
   <div class="plans">
     <div class="plan">
       <h3>Grátis</h3>
       <div class="price">0 €</div>
-      <ul><li>Orçamentos ilimitados</li><li>Envio por WhatsApp</li><li>IVA português calculado</li><li>Rodapé "Feito com Orçamento Rápido"</li></ul>
+      <ul><li>Orçamentos ilimitados</li><li>Envio por WhatsApp</li><li>IVA calculado, com a regra dos 20% no IVA a 6%</li><li>Rodapé "Feito com Orçamento Rápido"</li></ul>
     </div>
     <div class="plan pro">
       <h3>Pro</h3>
-      <div class="price">6,90 € <small>/ mês</small></div>
-      <ul><li>PDF com o seu logótipo</li><li>Sem rodapé da marca</li><li>Histórico de clientes e orçamentos</li><li>Tabela de preços guardada</li></ul>
+      <div class="price">6,90 € <small>/ mês · menos de 0,23 € por dia</small></div>
+      <ul><li>PDF com o seu logótipo, pronto a enviar por email</li><li>Sem o rodapé da marca: o orçamento é só seu</li><li>Histórico de orçamentos para reabrir e reenviar</li><li>Tabela de preços: os preços que já usou aparecem sozinhos</li></ul>
+      <p class="note">Se um orçamento mais profissional lhe fizer ganhar uma obra por ano, o Pro paga-se várias vezes.</p>
       <div><a class="btn" id="buy" href="#precos" rel="noopener">Começar Pro</a></div>
       <p class="note" id="buyNote">O plano Pro abre em breve.</p>
+      <p class="note">Renova todos os meses. Para cancelar, responda ao email do recibo enviado pelo Stripe. <a href="termos">Termos e privacidade</a></p>
     </div>
+  </div>
+  <div class="restore" id="restore">
+    <div id="restoreForm">
+      <label for="code">Já é Pro noutro aparelho? Introduza o seu código de ativação</label>
+      <div class="rrow"><input id="code" placeholder="sub_..." autocomplete="off" spellcheck="false"><button class="btn ghost" type="button" id="codeBtn">Ativar</button></div>
+    </div>
+    <div id="myCode" hidden>
+      <span>O seu código de ativação, para usar o Pro noutro aparelho:</span>
+      <div class="rrow"><input id="myCodeVal" readonly><button class="btn ghost" type="button" id="myCodeCopy">Copiar</button></div>
+    </div>
+    <p class="note" id="restoreMsg" role="status"></p>
   </div>
 </section>
 
-<footer>Guias: <a href="guias/como-fazer-orcamento-obras">Como fazer um orçamento de obras</a> · <a href="guias/iva-6-obras">IVA a 6% em obras</a> · <a href="guias/modelo-orcamento-eletricista">Modelo para eletricista</a> · <a href="guias/modelo-orcamento-pintura">Modelo de pintura</a> · <a href="guias/orcamento-ou-fatura">Orçamento ou fatura</a><br>Orçamento Rápido · Um orçamento não substitui a fatura emitida em software certificado pela AT.</footer>
+<footer>Guias: <a href="guias/como-fazer-orcamento-obras">Como fazer um orçamento de obras</a> · <a href="guias/iva-6-obras">IVA a 6% em obras</a> · <a href="guias/modelo-orcamento-eletricista">Modelo para eletricista</a> · <a href="guias/modelo-orcamento-pintura">Modelo de pintura</a> · <a href="guias/orcamento-ou-fatura">Orçamento ou fatura</a><br>Orçamento Rápido · <a href="termos">Termos e privacidade</a> · Um orçamento não substitui a fatura emitida em software certificado pela AT.</footer>
 </div>
 
 <script src="app.js"></script>
