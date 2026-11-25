@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Faça orçamentos de obras com IVA português em 2 minutos e envie pelo WhatsApp. Grátis para canalizadores, eletricistas e pintores.">
+<title>Orçamento Rápido</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: hero → working tool (form | live quote sheet) → pricing. Workshop ink + hi-vis accent. */
+:root{
+  --bg:#f3f4f1; --paper:#ffffff; --ink:#18202b; --muted:#5d6672; --line:#d9ddd6;
+  --accent:#f2c230; --accent-ink:#18202b; --blue:#1f4e8c; --ok:#2f7d4f;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12161c; --paper:#1b2129; --ink:#e8ebee; --muted:#9aa3ad; --line:#2d3540;
+  --accent:#f2c230; --accent-ink:#18202b; --blue:#7fb0ee; --ok:#6cc08f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12161c; --paper:#1b2129; --ink:#e8ebee; --muted:#9aa3ad; --line:#2d3540;
+  --accent:#f2c230; --accent-ink:#18202b; --blue:#7fb0ee; --ok:#6cc08f; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}
+header{display:flex;justify-content:space-between;align-items:center;padding-block:18px;gap:12px}
+.brand{font-family:var(--f-display);font-weight:800;font-size:20px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.brand i{display:inline-block;width:14px;height:14px;background:var(--accent);transform:skew(-12deg)}
+.hero{padding-block:36px 28px;display:grid;gap:14px;max-width:760px}
+.hero h1{font-size:clamp(32px,6vw,54px);font-weight:800;line-height:1.02;letter-spacing:-.02em}
+.hero h1 mark{background:linear-gradient(transparent 58%,var(--accent) 58%);color:inherit;padding:0 2px}
+.hero p{color:var(--muted);font-size:17px;max-width:60ch;margin:0}
+.btn{font:600 15px var(--f-body);border:0;border-radius:6px;padding:11px 16px;cursor:pointer;background:var(--accent);color:var(--accent-ink);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.tool{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding-block:12px 48px}
+@media (max-width:860px){.tool{grid-template-columns:minmax(0,1fr)}}
+.panel{display:grid;gap:18px;align-content:start}
+fieldset{border:0;padding:0;margin:0;display:grid;gap:10px}
+legend{font:600 12px var(--f-body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+input,select{font:400 15px var(--f-body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:9px 10px;width:100%;min-width:0}
+.items{display:grid;gap:8px}
+.item{display:grid;grid-template-columns:minmax(0,1fr) 64px 70px 90px 34px;gap:6px;align-items:center}
+.item input{padding:8px}
+.item .x{background:transparent;border:1px solid var(--line);border-radius:6px;height:38px;cursor:pointer;color:var(--muted);font-size:16px}
+.ih{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+@media (max-width:480px){.item{grid-template-columns:1fr 1fr 1fr 34px}.item .d{grid-column:1/-1}.ih{display:none}}
+/* quote sheet */
+.sheet{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:28px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;display:grid;gap:18px;box-shadow:0 1px 0 var(--line),0 12px 30px -18px rgba(0,0,0,.25)}
+@media (max-width:860px){.sheet{position:static}}
+.sh-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:3px solid var(--ink);padding-bottom:14px}
+.sh-top h2{font-size:26px;font-weight:800;letter-spacing:-.01em}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.small{font-size:12.5px;color:var(--muted)}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.meta b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line);padding:6px 4px}
+td{padding:8px 4px;border-bottom:1px dashed var(--line);vertical-align:top}
+td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tot{display:grid;gap:4px;justify-content:end;grid-template-columns:auto 120px}
+.tot span:nth-child(even){text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.tot .g{font-family:var(--f-display);font-weight:800;font-size:20px;border-top:2px solid var(--ink);padding-top:6px}
+.foot{border-top:1px solid var(--line);padding-top:10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.wm{font-size:11.5px;color:var(--muted)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.toast{font-size:13px;color:var(--ok);min-height:20px}
+/* pricing */
+.pricing{padding-block:32px 64px;display:grid;gap:20px}
+.pricing h2{font-size:30px;font-weight:800}
+.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:640px){.plans{grid-template-columns:minmax(0,1fr)}}
+.plan{border:1px solid var(--line);border-radius:6px;padding:22px;display:grid;gap:10px;align-content:start;background:var(--paper)}
+.plan.pro{border:2px solid var(--ink)}
+.price{font-family:var(--f-display);font-size:34px;font-weight:800}
+.price small{font:400 14px var(--f-body);color:var(--muted)}
+.plan ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.note{font-size:13px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding-block:20px;font-size:12.5px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand"><i></i>Orçamento Rápido</div>
+  <a class="btn ghost" href="#precos">Preços</a>
+</header>
+
+<section class="hero">
+  <h1>Faça o orçamento <mark>ainda na obra</mark>, envie pelo WhatsApp antes de sair.</h1>
+  <p>Para canalizadores, eletricistas, pintores e pequenas obras. Linhas de material e mão de obra, IVA português calculado, pronto a enviar ao cliente em 2 minutos.</p>
+</section>
+
+<section class="tool" aria-label="Criar orçamento">
+  <form class="panel" id="f" autocomplete="off">
+    <fieldset>
+      <legend>O seu negócio</legend>
+      <div class="row">
+        <label>Nome<input id="bizName" value="Canalizações Silva"></label>
+        <label>NIF<input id="bizNif" value="123456789" inputmode="numeric"></label>
+      </div>
+      <label>Contacto<input id="bizPhone" value="912 345 678"></label>
+    </fieldset>
+    <fieldset>
+      <legend>Cliente</legend>
+      <div class="row">
+        <label>Nome<input id="cliName" value="Ana Ferreira"></label>
+        <label>Morada da obra<input id="cliAddr" value="R. do Almada 120, Porto"></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Trabalhos e materiais</legend>
+      <div class="item ih" aria-hidden="true"><span>Descrição</span><span>Qtd</span><span>Un.</span><span>Preço €</span><span></span></div>
+      <div class="items" id="items"></div>
+      <div><button type="button" class="btn ghost" id="add">+ Adicionar linha</button></div>
+    </fieldset>
+    <fieldset>
+      <legend>Condições</legend>
+      <div class="row">
+        <label>IVA
+          <select id="vat">
+            <option value="23">23% · taxa normal</option>
+            <option value="6">6% · empreitada em habitação (verba 2.27)</option>
+            <option value="13">13% · taxa intermédia</option>
+            <option value="0">Isento · art. 53.º do CIVA</option>
+          </select>
+        </label>
+        <label>Validade (dias)<input id="valid" type="number" min="1" value="30" inputmode="numeric"></label>
+      </div>
+      <label>Notas<input id="notes" value="Inclui deslocação. Pagamento 50% na adjudicação."></label>
+    </fieldset>
+    <p class="small">Exemplo preenchido. Altere os campos para criar o seu.</p>
+  </form>
+
+  <aside class="sheet" aria-label="Pré-visualização do orçamento">
+    <div class="sh-top">
+      <div><h2>ORÇAMENTO</h2><div class="small mono" id="qNum"></div></div>
+      <div style="text-align:right"><strong id="pBiz"></strong><div class="small" id="pBizMeta"></div></div>
+    </div>
+    <div class="meta">
+      <div><b>Cliente</b><span id="pCli"></span><div class="small" id="pAddr"></div></div>
+      <div><b>Data · Válido até</b><span class="mono" id="pDates"></span></div>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Descrição</th><th class="n">Qtd</th><th class="n">Preço</th><th class="n">Total</th></tr></thead>
+      <tbody id="pRows"></tbody>
+    </table></div>
+    <div class="tot">
+      <span>Subtotal</span><span id="tSub"></span>
+      <span id="tVatL">IVA</span><span id="tVat"></span>
+      <span class="g">Total</span><span class="g" id="tTot"></span>
+    </div>
+    <div class="small" id="pNotes"></div>
+    <div class="foot">
+      <span class="wm">Feito com Orçamento Rápido · grátis</span>
+      <span class="wm">Este documento não é uma fatura.</span>
+    </div>
+    <div class="actions">
+      <button class="btn" type="button" id="copy">Copiar para WhatsApp</button>
+      <a class="btn ghost" href="#precos">Exportar PDF (Pro)</a>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+  </aside>
+</section>
+
+<section class="pricing" id="precos">
+  <h2>Preços</h2>
+  <div class="plans">
+    <div class="plan">
+      <h3>Grátis</h3>
+      <div class="price">0 €</div>
+      <ul><li>Orçamentos ilimitados</li><li>Envio por WhatsApp</li><li>IVA português calculado</li><li>Rodapé "Feito com Orçamento Rápido"</li></ul>
+    </div>
+    <div class="plan pro">
+      <h3>Pro</h3>
+      <div class="price">6,90 € <small>/ mês</small></div>
+      <ul><li>PDF com o seu logótipo</li><li>Sem rodapé da marca</li><li>Histórico de clientes e orçamentos</li><li>Tabela de preços guardada</li></ul>
+      <div><a class="btn" id="buy" href="#precos">Começar Pro</a></div>
+      <p class="note" id="buyNote">Pagamento seguro com cartão, MB WAY ou Multibanco. Cancele quando quiser.</p>
+    </div>
+  </div>
+</section>
+
+<footer>Orçamento Rápido · Um orçamento não substitui a fatura emitida em software certificado pela AT.</footer>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const eur=n=>n.toLocaleString('pt-PT',{style:'currency',currency:'EUR'});
+let items=[
+  {d:'Substituição de esquentador (mão de obra)',q:1,u:'serv.',p:120},
+  {d:'Esquentador estanque 11 L',q:1,u:'un.',p:289},
+  {d:'Tubo multicamada 16 mm',q:6,u:'m',p:3.4},
+  {d:'Deslocação',q:1,u:'serv.',p:25}
+];
+const qn='ORC-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*900)+100);
+function renderItems(){
+  const box=$('items');box.innerHTML='';
+  items.forEach((it,i)=>{
+    const r=document.createElement('div');r.className='item';
+    r.innerHTML=`<input class="d" id="d${i}" aria-label="Descrição" value="${it.d.replace(/"/g,'&quot;')}">
+      <input id="q${i}" aria-label="Quantidade" type="number" step="any" min="0" value="${it.q}">
+      <input id="u${i}" aria-label="Unidade" value="${it.u}">
+      <input id="p${i}" aria-label="Preço unitário" type="number" step="0.01" min="0" value="${it.p}">
+      <button type="button" class="x" aria-label="Remover linha">×</button>`;
+    r.querySelector('.d').oninput=e=>{it.d=e.target.value;render()};
+    r.querySelector(`#q${i}`).oninput=e=>{it.q=parseFloat(e.target.value)||0;render()};
+    r.querySelector(`#u${i}`).oninput=e=>{it.u=e.target.value;render()};
+    r.querySelector(`#p${i}`).oninput=e=>{it.p=parseFloat(e.target.value)||0;render()};
+    r.querySelector('.x').onclick=()=>{items.splice(i,1);renderItems();render()};
+    box.appendChild(r);
+  });
+}
+function calc(){
+  const sub=items.reduce((s,i)=>s+i.q*i.p,0);const rate=+$('vat').value;
+  const vat=Math.round(sub*rate)/100;return{sub,rate,vat,tot:sub+vat};
+}
+function fmtDate(d){return d.toLocaleDateString('pt-PT')}
+function render(){
+  const c=calc();const now=new Date();const until=new Date(now.getTime()+(+$('valid').value||30)*864e5);
+  $('qNum').textContent=qn;
+  $('pBiz').textContent=$('bizName').value;
+  $('pBizMeta').textContent='NIF '+$('bizNif').value+' · '+$('bizPhone').value;
+  $('pCli').textContent=$('cliName').value;$('pAddr').textContent=$('cliAddr').value;
+  $('pDates').textContent=fmtDate(now)+' · '+fmtDate(until);
+  const tb=$('pRows');tb.innerHTML='';
+  items.forEach(i=>{const tr=document.createElement('tr');
+    const td=(t,n)=>{const e=document.createElement('td');if(n)e.className='n';e.textContent=t;tr.appendChild(e)};
+    td(i.d);td(i.q+' '+i.u,1);td(eur(i.p),1);td(eur(i.q*i.p),1);tb.appendChild(tr)});
+  $('tSub').textContent=eur(c.sub);
+  $('tVatL').textContent=c.rate?`IVA ${c.rate}%`:'IVA (isento art. 53.º)';
+  $('tVat').textContent=eur(c.vat);$('tTot').textContent=eur(c.tot);
+  $('pNotes').textContent=$('notes').value;
+}
+function asText(){
+  const c=calc();const v=+$('valid').value||30;
+  const lines=items.map(i=>`• ${i.d}: ${i.q} ${i.u} × ${eur(i.p)} = ${eur(i.q*i.p)}`);
+  return [`*ORÇAMENTO ${qn}*`,`${$('bizName').value} · NIF ${$('bizNif').value}`,``,
+    `Cliente: ${$('cliName').value}`,`Obra: ${$('cliAddr').value}`,``,...lines,``,
+    `Subtotal: ${eur(c.sub)}`,c.rate?`IVA ${c.rate}%: ${eur(c.vat)}`:`IVA: isento (art. 53.º CIVA)`,
+    `*Total: ${eur(c.tot)}*`,``,`Válido ${v} dias. ${$('notes').value}`,`Contacto: ${$('bizPhone').value}`,``,
+    `_Feito com Orçamento Rápido_`].join('\n');
+}
+$('copy').onclick=()=>{
+  const t=asText();
+  const done=()=>{$('toast').textContent='Copiado. Cole na conversa do WhatsApp com o cliente.'};
+  try{navigator.clipboard.writeText(t).then(done,fallback)}catch(e){fallback()}
+  function fallback(){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');done()}catch(e){$('toast').textContent='Selecione e copie o texto manualmente.'}ta.remove()}
+};
+$('add').onclick=()=>{items.push({d:'',q:1,u:'un.',p:0});renderItems();render();$('d'+(items.length-1)).focus()};
+$('f').addEventListener('input',render);
+$('f').addEventListener('submit',e=>e.preventDefault());
+$('buy').onclick=e=>{e.preventDefault();$('buyNote').textContent='Pagamentos ainda não ativos: o plano Pro abre em breve.'};
+renderItems();render();
+</script>
+</body>
+</html>
