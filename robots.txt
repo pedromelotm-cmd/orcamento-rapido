@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://orcamento-rapido.pages.dev/sitemap.xml
